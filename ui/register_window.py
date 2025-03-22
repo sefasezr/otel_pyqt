@@ -1,33 +1,32 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QMessageBox
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
+from service.user_service import UserService  # Service import edildi
 
 class RegisterWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Kayıt Ol")
         self.setGeometry(400, 150, 800, 700)
+        self.user_service = UserService()  # Service örneği
         self.init_ui()
 
     def init_ui(self):
-        # Arka plan resmi
         self.background_label = QLabel(self)
-        pixmap = QPixmap("assets/hotel_image.jpg")  # Resmin yolu
+        pixmap = QPixmap("assets/hotel_image.jpg")
         self.background_label.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
         self.background_label.setGeometry(0, 0, self.width(), self.height())
         self.background_label.setStyleSheet("background-color: black;")
 
         layout = QVBoxLayout()
-        layout.setSpacing(12)  # Kutular arasındaki boşluğu ayarlıyoruz
+        layout.setSpacing(12)
 
-        # Başlık
         self.title = QLabel("Kayıt Ol")
         self.title.setFont(QFont("Arial", 20, QFont.Bold))
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setStyleSheet("color: white;")
         layout.addWidget(self.title)
 
-        # Ortak stil (kutucuk boyutları ve tasarımı)
         input_style = """
             QLineEdit {
                 font-size: 14px;
@@ -35,12 +34,11 @@ class RegisterWindow(QWidget):
                 border-radius: 8px;
                 border: 1px solid gray;
                 background-color: white;
-                width: 400px;  /* Genişlik artırıldı */
-                height: 40px;  /* Yükseklik azaltıldı */
+                width: 400px;
+                height: 40px;
             }
         """
 
-        # Kullanıcı bilgileri giriş alanları
         self.first_name_input = QLineEdit(self)
         self.first_name_input.setPlaceholderText("İsim")
         self.first_name_input.setStyleSheet(input_style)
@@ -78,14 +76,12 @@ class RegisterWindow(QWidget):
         self.password_confirm_input.setStyleSheet(input_style)
         layout.addWidget(self.password_confirm_input, alignment=Qt.AlignCenter)
 
-        # Kayıt Ol Butonu
         self.register_button = QPushButton("Kayıt Ol", self)
-        self.register_button.clicked.connect(self.open_main_window)  # Ana menüye yönlendirme
+        self.register_button.clicked.connect(self.register_user)  # Service kullanacak
         self.register_button.setFont(QFont("Arial", 14, QFont.Bold))
         self.register_button.setStyleSheet("background-color: #28a745; color: white; padding: 12px; border-radius: 5px; width: 400px;")
         layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
 
-        # Giriş Ekranına Dön Butonu
         self.back_button = QPushButton("Giriş Ekranına Dön", self)
         self.back_button.clicked.connect(self.go_back_to_entry)
         self.back_button.setFont(QFont("Arial", 14, QFont.Bold))
@@ -94,16 +90,37 @@ class RegisterWindow(QWidget):
 
         self.setLayout(layout)
 
+    def register_user(self):
+        first_name = self.first_name_input.text()
+        last_name = self.last_name_input.text()
+        username = self.username_input.text()
+        phone = self.phone_input.text()
+        email = self.email_input.text()
+        password = self.password_input.text()
+        password_confirm = self.password_confirm_input.text()
+
+        if password != password_confirm:
+            QMessageBox.warning(self, "Hata", "Şifreler uyuşmuyor!")
+            return
+
+        success, message = self.user_service.register_user(
+            first_name, last_name, username, phone, email, password
+        )
+
+        if success:
+            QMessageBox.information(self, "Başarılı", message)
+            self.open_main_window()
+        else:
+            QMessageBox.warning(self, "Kayıt Başarısız", message)
+
     def open_main_window(self):
-        """Ana menüyü aç ve kayıt ekranını kapat"""
-        from ui.main_window import MainWindow  # MainWindow çağırıyoruz
+        from ui.main_window import MainWindow
         self.main_window = MainWindow()
         self.main_window.show()
         self.close()
 
     def go_back_to_entry(self):
-        """Giriş Ekranına Dön"""
-        from ui.entry_page import EntryPage  # EntryPage açılacak
+        from ui.entry_page import EntryPage
         self.entry_page = EntryPage()
         self.entry_page.show()
         self.close()
