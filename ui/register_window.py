@@ -80,26 +80,30 @@ class RegisterWindow(QWidget):
 
         # Kayıt Ol Butonu
         self.register_button = QPushButton("Kayıt Ol", self)
-        self.register_button.clicked.connect(self.register_user)
+        self.register_button.clicked.connect(self.open_main_window)  # Ana menüye yönlendirme
         self.register_button.setFont(QFont("Arial", 14, QFont.Bold))
         self.register_button.setStyleSheet("background-color: #28a745; color: white; padding: 12px; border-radius: 5px; width: 400px;")
         layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
 
-        # Ana Ekrana Dön Butonu
-        self.back_button = QPushButton("Ana Ekrana Dön", self)
-        self.back_button.clicked.connect(self.go_back_to_main)
+        # Giriş Ekranına Dön Butonu
+        self.back_button = QPushButton("Giriş Ekranına Dön", self)
+        self.back_button.clicked.connect(self.go_back_to_entry)
         self.back_button.setFont(QFont("Arial", 14, QFont.Bold))
         self.back_button.setStyleSheet("background-color: #dc3545; color: white; padding: 12px; border-radius: 5px; width: 400px;")
         layout.addWidget(self.back_button, alignment=Qt.AlignCenter)
 
         self.setLayout(layout)
 
-    def register_user(self):
-        # Burada kullanıcı kaydı ile ilgili işlemler yapılabilir
-        print("Kullanıcı kaydedildi!")
-
-    def go_back_to_main(self):
-        from ui.main_window import MainWindow  # Ana pencereyi çağırıyoruz
+    def open_main_window(self):
+        """Ana menüyü aç ve kayıt ekranını kapat"""
+        from ui.main_window import MainWindow  # MainWindow çağırıyoruz
         self.main_window = MainWindow()
         self.main_window.show()
-        self.close()  # Kayıt penceresini kapat
+        self.close()
+
+    def go_back_to_entry(self):
+        """Giriş Ekranına Dön"""
+        from ui.entry_page import EntryPage  # EntryPage açılacak
+        self.entry_page = EntryPage()
+        self.entry_page.show()
+        self.close()

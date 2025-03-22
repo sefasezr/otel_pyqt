@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
@@ -12,13 +12,13 @@ class LoginWindow(QWidget):
     def init_ui(self):
         # Arka plan resmi
         self.background_label = QLabel(self)
-        pixmap = QPixmap("assets/hotel_image.jpg")  # Resmin yolu
+        pixmap = QPixmap("assets/hotel_image.jpg")
         self.background_label.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
         self.background_label.setGeometry(0, 0, self.width(), self.height())
         self.background_label.setStyleSheet("background-color: black;")
 
         layout = QVBoxLayout()
-        layout.setSpacing(8)  # Daha dar aralıklar
+        layout.setSpacing(15)
 
         # Başlık
         self.title = QLabel("Giriş Yap")
@@ -27,7 +27,7 @@ class LoginWindow(QWidget):
         self.title.setStyleSheet("color: white;")
         layout.addWidget(self.title)
 
-        # Ortak stil (kutucuk boyutları ve tasarımı)
+        # Ortak stil
         input_style = """
             QLineEdit {
                 font-size: 14px;
@@ -40,47 +40,45 @@ class LoginWindow(QWidget):
             }
         """
 
-        # Kullanıcı adı giriş kutusu
+        # Kullanıcı adı giriş
         self.username_input = QLineEdit(self)
         self.username_input.setPlaceholderText("Kullanıcı Adı")
         self.username_input.setStyleSheet(input_style)
         layout.addWidget(self.username_input, alignment=Qt.AlignCenter)
 
-        # Şifre giriş kutusu
+        # Şifre giriş
         self.password_input = QLineEdit(self)
         self.password_input.setPlaceholderText("Şifre")
         self.password_input.setEchoMode(QLineEdit.Password)
         self.password_input.setStyleSheet(input_style)
         layout.addWidget(self.password_input, alignment=Qt.AlignCenter)
 
-        # Spacer ekleyerek aralıkları düzenliyoruz
-        layout.addSpacing(5)
-
         # Giriş Yap Butonu
         self.login_button = QPushButton("Giriş Yap", self)
-        self.login_button.clicked.connect(self.login_user)
         self.login_button.setFont(QFont("Arial", 14, QFont.Bold))
-        self.login_button.setStyleSheet("background-color: #007bff; color: white; padding: 10px; border-radius: 5px; width: 400px;")
+        self.login_button.setStyleSheet("background-color: #007bff; color: white; padding: 12px; border-radius: 5px; width: 400px;")
+        self.login_button.clicked.connect(self.open_main_window)  # Ana menüye yönlendirme
         layout.addWidget(self.login_button, alignment=Qt.AlignCenter)
 
-        # Spacer ekleyerek butonların arasını daraltıyoruz
-        layout.addSpacing(5)
-
-        # Ana Ekrana Dön Butonu
-        self.back_button = QPushButton("Ana Ekrana Dön", self)
-        self.back_button.clicked.connect(self.go_back_to_main)
+        # Giriş Ekranına Dön Butonu
+        self.back_button = QPushButton("Giriş Ekranına Dön", self)
+        self.back_button.clicked.connect(self.go_back_to_entry)
         self.back_button.setFont(QFont("Arial", 14, QFont.Bold))
-        self.back_button.setStyleSheet("background-color: #dc3545; color: white; padding: 10px; border-radius: 5px; width: 400px;")
+        self.back_button.setStyleSheet("background-color: #dc3545; color: white; padding: 12px; border-radius: 5px; width: 400px;")
         layout.addWidget(self.back_button, alignment=Qt.AlignCenter)
 
         self.setLayout(layout)
 
-    def login_user(self):
-        # Burada giriş doğrulama işlemleri yapılabilir
-        print("Giriş yapılıyor...")
-
-    def go_back_to_main(self):
-        from ui.main_window import MainWindow  # Ana pencereyi çağırıyoruz
+    def open_main_window(self):
+        """Ana menüyü aç ve giriş ekranını kapat"""
+        from ui.main_window import MainWindow  # MainWindow çağırıyoruz
         self.main_window = MainWindow()
         self.main_window.show()
-        self.close()  # Giriş penceresini kapat
+        self.close()
+
+    def go_back_to_entry(self):
+        """Giriş Ekranına Dön"""
+        from ui.entry_page import EntryPage  # EntryPage açılacak
+        self.entry_page = EntryPage()
+        self.entry_page.show()
+        self.close()

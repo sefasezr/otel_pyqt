@@ -29,7 +29,7 @@ class ReservationWindow(QWidget):
         self.title.setStyleSheet("color: white;")
         layout.addWidget(self.title)
 
-        # Ortak stil (kutucuk boyutları ve tasarımı)
+        # Ortak stil
         input_style = """
             QLineEdit, QComboBox, QDateEdit, QSpinBox {
                 font-size: 14px;

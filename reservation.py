@@ -1,13 +1,8 @@
-from database import Database
-
 class Reservation:
-    def __init__(self):
-        self.db = Database()
-
-    def get_user_reservations(self, user_id):
-        query = "SELECT * FROM reservations WHERE user_id = %s"
-        return self.db.fetch_query(query, (user_id,))
-
-    def cancel_reservation(self, reservation_id):
-        query = "UPDATE reservations SET status = 'cancelled' WHERE reservation_id = %s"
-        self.db.execute_query(query, (reservation_id,))
+    def __init__(self, reservation_id, user_id, room_id, check_in_date, check_out_date, status="active"):
+        self.reservation_id = reservation_id
+        self.user_id = user_id
+        self.room_id = room_id
+        self.check_in_date = check_in_date
+        self.check_out_date = check_out_date
+        self.status = status

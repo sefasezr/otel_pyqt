@@ -1,10 +1,16 @@
 from PyQt5.QtWidgets import QApplication
-from ui.main_window import MainWindow
+from ui.entry_page import EntryPage  # Yeni açılış sayfası
+from database import Database  # Veritabanı sınıfı
 import sys
 
+# Uygulama başlamadan önce tabloları oluştur
+db = Database()
+db.create_tables()  # Tabloların oluşturulmasını sağla
+
+# PyQt uygulamasını başlat
 app = QApplication(sys.argv)
 
-main_window = MainWindow()
+entry_page = EntryPage()
 
-main_window.show()
+entry_page.show()
 sys.exit(app.exec_())
