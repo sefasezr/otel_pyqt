@@ -5,8 +5,9 @@ from ui.reservation_window import ReservationWindow
 from ui.reservation_cancel_window import CancelReservationWindow
 
 class MainWindow(QWidget):
-    def __init__(self):
+    def __init__(self, user):  # 👈 user parametresi alındı
         super().__init__()
+        self.user = user
         self.setWindowTitle("Otel Rezervasyon Sistemi")
         self.setGeometry(400, 150, 800, 700)
         self.init_ui()
@@ -21,7 +22,8 @@ class MainWindow(QWidget):
         layout = QVBoxLayout()
         layout.setSpacing(20)
 
-        self.title = QLabel("Otel Rezervasyon Paneli")
+        full_name = f"{self.user[1]} {self.user[2]}"
+        self.title = QLabel(f"Hoş geldin, {full_name} 👋")
         self.title.setFont(QFont("Arial", 16, QFont.Bold))
         self.title.setAlignment(Qt.AlignCenter)
         self.title.setStyleSheet("color: white;")
@@ -52,7 +54,6 @@ class MainWindow(QWidget):
         self.cancel_button.clicked.connect(self.open_cancel_reservation_window)
         layout.addWidget(self.cancel_button)
 
-        # 🔴 Çıkış Yap butonu
         self.logout_button = QPushButton("Çıkış Yap", self)
         self.logout_button.setFont(QFont("Arial", 12, QFont.Bold))
         self.logout_button.setStyleSheet("background-color: #dc3545; color: white; padding: 10px; border-radius: 5px;")
@@ -73,8 +74,7 @@ class MainWindow(QWidget):
         self.hide()
 
     def logout(self):
-        """Giriş ekranına dön"""
-        from ui.entry_page import EntryPage  # Import burada yapıldı
+        from ui.entry_page import EntryPage
         self.entry_page = EntryPage()
         self.entry_page.show()
         self.close()

@@ -1,14 +1,15 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QMessageBox
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
-from service.user_service import UserService  # Service import edildi
+from service.user_service import UserService
+from ui.main_window import MainWindow
 
 class RegisterWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Kayıt Ol")
         self.setGeometry(400, 150, 800, 700)
-        self.user_service = UserService()  # Service örneği
+        self.user_service = UserService()
         self.init_ui()
 
     def init_ui(self):
@@ -77,7 +78,7 @@ class RegisterWindow(QWidget):
         layout.addWidget(self.password_confirm_input, alignment=Qt.AlignCenter)
 
         self.register_button = QPushButton("Kayıt Ol", self)
-        self.register_button.clicked.connect(self.register_user)  # Service kullanacak
+        self.register_button.clicked.connect(self.register_user)
         self.register_button.setFont(QFont("Arial", 14, QFont.Bold))
         self.register_button.setStyleSheet("background-color: #28a745; color: white; padding: 12px; border-radius: 5px; width: 400px;")
         layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
@@ -108,14 +109,14 @@ class RegisterWindow(QWidget):
         )
 
         if success:
+            user = self.user_service.repo.get_user_by_username(username)  # 👈 yeni kullanıcıyı al
             QMessageBox.information(self, "Başarılı", message)
-            self.open_main_window()
+            self.open_main_window(user)
         else:
             QMessageBox.warning(self, "Kayıt Başarısız", message)
 
-    def open_main_window(self):
-        from ui.main_window import MainWindow
-        self.main_window = MainWindow()
+    def open_main_window(self, user):
+        self.main_window = MainWindow(user)
         self.main_window.show()
         self.close()
 

@@ -1,15 +1,15 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QMessageBox
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
-from service.user_service import UserService  # Service katmanı
-from ui.main_window import MainWindow  # Başarılı giriş sonrası yönlendirme
+from service.user_service import UserService
+from ui.main_window import MainWindow
 
 class LoginWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Giriş Yap")
         self.setGeometry(400, 150, 800, 600)
-        self.user_service = UserService()  # UserService örneği
+        self.user_service = UserService()
         self.init_ui()
 
     def init_ui(self):
@@ -73,12 +73,12 @@ class LoginWindow(QWidget):
 
         if success:
             QMessageBox.information(self, "Başarılı", "Giriş başarılı.")
-            self.open_main_window()
+            self.open_main_window(result)  # 👈 user bilgisi gönderildi
         else:
             QMessageBox.warning(self, "Hata", result)
 
-    def open_main_window(self):
-        self.main_window = MainWindow()
+    def open_main_window(self, user):
+        self.main_window = MainWindow(user)
         self.main_window.show()
         self.close()
 
