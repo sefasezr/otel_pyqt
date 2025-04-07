@@ -109,7 +109,7 @@ class RegisterWindow(QWidget):
         )
 
         if success:
-            user = self.user_service.repo.get_user_by_username(username)  # 👈 yeni kullanıcıyı al
+            user = self.user_service.repo.get_user_by_username(username)
             QMessageBox.information(self, "Başarılı", message)
             self.open_main_window(user)
         else:
