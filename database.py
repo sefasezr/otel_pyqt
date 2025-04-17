@@ -49,22 +49,61 @@ class Database:
             room_id SERIAL PRIMARY KEY,
             room_type VARCHAR(50) NOT NULL,
             price NUMERIC(10, 2) NOT NULL,
-            status VARCHAR(20) DEFAULT 'available'
+            status VARCHAR(20) DEFAULT 'available'  -- 'available' or 'booked'
         );
         """
 
         reservation_table = """
         CREATE TABLE IF NOT EXISTS reservations (
             reservation_id SERIAL PRIMARY KEY,
-            user_id INTEGER NOT NULL REFERENCES users(user_id),
-            room_id INTEGER NOT NULL REFERENCES rooms(room_id),
+            user_id INTEGER NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+            room_id INTEGER NOT NULL REFERENCES rooms(room_id) ON DELETE CASCADE,
             check_in_date DATE NOT NULL,
             check_out_date DATE NOT NULL,
+            price NUMERIC(10, 2) NOT NULL,
             status VARCHAR(20) DEFAULT 'active'
         );
         """
 
-        # Tabloları oluşturma
+        # Tabloları oluştur
         self.execute_query(user_table)
         self.execute_query(room_table)
         self.execute_query(reservation_table)
+
+        # Başlangıçta oda türlerini ekleyelim
+        #self.insert_rooms()
+
+    def insert_rooms(self):
+        """Başlangıçta oda türlerini ekleyelim"""
+        # Standart odalar için
+        self.execute_query("""
+        INSERT INTO rooms (room_type, price, status) 
+        VALUES
+        ('Standard', 100.00, 'available'),
+        ('Standard', 100.00, 'available'),
+        ('Standard', 100.00, 'available'),
+        ('Standard', 100.00, 'available'),
+        ('Standard', 100.00, 'available');
+        """)
+
+        # Deluxe odalar için
+        self.execute_query("""
+        INSERT INTO rooms (room_type, price, status) 
+        VALUES
+        ('Deluxe', 150.00, 'available'),
+        ('Deluxe', 150.00, 'available'),
+        ('Deluxe', 150.00, 'available'),
+        ('Deluxe', 150.00, 'available'),
+        ('Deluxe', 150.00, 'available');
+        """)
+
+        # Suite odalar için
+        self.execute_query("""
+        INSERT INTO rooms (room_type, price, status) 
+        VALUES
+        ('Suite', 200.00, 'available'),
+        ('Suite', 200.00, 'available'),
+        ('Suite', 200.00, 'available'),
+        ('Suite', 200.00, 'available'),
+        ('Suite', 200.00, 'available');
+        """)

@@ -64,7 +64,7 @@ class MainWindow(QWidget):
         self.background_label.lower()
 
     def open_reservation_window(self):
-        self.reservation_window = ReservationWindow()
+        self.reservation_window = ReservationWindow(self.user)
         self.reservation_window.show()
         self.hide()
 
