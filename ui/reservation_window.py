@@ -93,9 +93,13 @@ class ReservationWindow(QWidget):
         self.setLayout(layout)
 
     def check_available_rooms(self):
+        """Odanın tarih aralıklarına göre müsaitliğini kontrol et"""
         self.room_selector.clear()
         selected_room_type = self.room_type.currentText()
-        rooms = self.service.fetch_available_rooms(selected_room_type)
+        checkin_date = self.checkin_date.date().toString("yyyy-MM-dd")
+        checkout_date = self.checkout_date.date().toString("yyyy-MM-dd")
+
+        rooms = self.service.fetch_available_rooms(selected_room_type, checkin_date, checkout_date)
 
         for room_id, _, _ in rooms:
             self.room_selector.addItem(f"Oda {room_id}", room_id)

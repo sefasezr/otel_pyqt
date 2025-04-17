@@ -1,5 +1,7 @@
 import uuid
 
+from PyQt5.QtCore import QDate
+
 from repository.user_repository import UserRepository
 from reservation import Reservation
 from repository.reservation_repository import ReservationRepository
@@ -10,8 +12,9 @@ class ReservationService:
         self.user_repository = UserRepository()
 
 
-    def fetch_available_rooms(self, room_type):
-        return self.reservation_repository.get_available_rooms_by_type(room_type)
+    def fetch_available_rooms(self, room_type, checkin_date, checkout_date):
+        """Tarih aralığına göre müsait odaları getir"""
+        return self.reservation_repository.get_available_rooms_by_type_and_date(room_type, checkin_date, checkout_date)
 
     def make_reservation(self, user, room_id, checkin_date, checkout_date, people_count):
         # Eğer user nesnesi tuple şeklindeyse, onu User nesnesine dönüştür
@@ -26,11 +29,24 @@ class ReservationService:
         if not result:
             return None, "Oda fiyatı alınamadı"
 
-        price = float(result[0][0]) * people_count
+        room_price = float(result[0][0])
 
+        # Tarihler arasındaki farkı hesapla (gün sayısı)
+        checkin_date_obj = QDate.fromString(checkin_date, "yyyy-MM-dd")
+        checkout_date_obj = QDate.fromString(checkout_date, "yyyy-MM-dd")
 
-        # Rezervasyon ekle
-        insert_result = self.reservation_repository.insert_reservation(user.user_id, room_id, checkin_date, checkout_date, price)
+        # Geçersiz tarih aralığı kontrolü
+        if checkin_date_obj >= checkout_date_obj:
+            return None, "Geçersiz tarih aralığı"
+
+        duration = checkin_date_obj.daysTo(checkout_date_obj)
+
+        # Toplam fiyatı hesapla
+        total_price = room_price * people_count * duration
+
+        # Rezervasyonu ekle
+        insert_result = self.reservation_repository.insert_reservation(user.user_id, room_id, checkin_date,
+                                                                       checkout_date, total_price)
 
         if not insert_result:
             return None, "Rezervasyon oluşturulamadı"
@@ -46,7 +62,7 @@ class ReservationService:
             room_id=room_id,
             check_in_date=checkin_date,
             check_out_date=checkout_date,
-            price=price,
+            price=total_price,
             status="active"
         )
         user.reservations.append(reservation)

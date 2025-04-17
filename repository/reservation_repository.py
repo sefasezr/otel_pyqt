@@ -4,12 +4,17 @@ class ReservationRepository:
     def __init__(self):
         self.db = Database()
 
-    def get_available_rooms_by_type(self, room_type):
+    def get_available_rooms_by_type_and_date(self, room_type, checkin_date, checkout_date):
+        """Odaların tarih aralıklarına göre müsaitliğini kontrol et"""
         query = """
         SELECT room_id, room_type, status FROM rooms
-        WHERE room_type = %s AND status = 'available'
+        WHERE room_type = %s
+        AND room_id NOT IN (
+            SELECT room_id FROM reservations
+            WHERE (check_in_date <= %s AND check_out_date >= %s)
+        )
         """
-        return self.db.fetch_query(query, (room_type,))
+        return self.db.fetch_query(query, (room_type, checkout_date, checkin_date))
 
     def get_room_price(self, room_id):
         query = "SELECT price FROM rooms WHERE room_id = %s"
