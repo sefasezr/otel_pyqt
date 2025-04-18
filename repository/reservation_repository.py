@@ -39,3 +39,17 @@ class ReservationRepository:
     def update_room_status(self, room_id, status="booked"):
         query = "UPDATE rooms SET status = %s WHERE room_id = %s"
         self.db.execute_query(query, (status, room_id))
+
+    def get_upcoming_reservations_by_user(self, user_id):
+        query = """
+        SELECT * FROM reservations
+        WHERE user_id = %s AND check_in_date >= CURRENT_DATE
+        """
+        try:
+            print("Sorgu çalıştırılıyor...")
+            result = self.db.fetch_query(query, (user_id,))
+            print("Sorgu sonucu: ", result)  # Burada gelen veriyi kontrol et
+            return result
+        except Exception as e:
+            print("Veritabanı hatası:", e)
+            return []

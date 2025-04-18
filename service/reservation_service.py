@@ -67,3 +67,13 @@ class ReservationService:
         )
         user.reservations.append(reservation)
         return reservation, None
+
+    def get_upcoming_reservations(self, user_id):
+        try:
+            # Doğru repo fonksiyonu çağırıldığından emin olalım
+            reservations = self.reservation_repository.get_upcoming_reservations_by_user(user_id)
+            print("Yapılacak rezervasyonlar:", reservations)
+            return reservations
+        except Exception as e:
+            print("Hata alındı: ", e)
+            return []

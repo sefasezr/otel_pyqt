@@ -3,10 +3,11 @@ from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
 class CancelReservationWindow(QWidget):
-    def __init__(self):
+    def __init__(self,user):
         super().__init__()
         self.setWindowTitle("Rezervasyon İptali")
         self.setGeometry(400, 150, 800, 700)
+        self.user = user
         self.init_ui()
 
     def init_ui(self):
@@ -64,6 +65,6 @@ class CancelReservationWindow(QWidget):
     def go_back_to_main(self):
         """Ana Menüye Dön"""
         from ui.main_window import MainWindow  # Ana pencereyi çağırıyoruz
-        self.main_window = MainWindow()
+        self.main_window = MainWindow(self.user)
         self.main_window.show()
         self.close()  # Rezervasyon iptal sayfasını kapat

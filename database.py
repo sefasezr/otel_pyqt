@@ -65,10 +65,22 @@ class Database:
         );
         """
 
+        contact_table = """
+            CREATE TABLE IF NOT EXISTS contact (
+                contact_id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                phone VARCHAR(15) NOT NULL,
+                title VARCHAR(100) NOT NULL,
+                content TEXT NOT NULL,
+                date DATE NOT NULL DEFAULT CURRENT_DATE
+            );
+            """
+
         # Tabloları oluştur
         self.execute_query(user_table)
         self.execute_query(room_table)
         self.execute_query(reservation_table)
+        self.execute_query(contact_table)
 
         # Başlangıçta oda türlerini ekleyelim
         #self.insert_rooms()

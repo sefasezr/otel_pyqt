@@ -69,7 +69,7 @@ class MainWindow(QWidget):
         self.hide()
 
     def open_cancel_reservation_window(self):
-        self.cancel_window = CancelReservationWindow()
+        self.cancel_window = CancelReservationWindow(self.user)
         self.cancel_window.show()
         self.hide()
 

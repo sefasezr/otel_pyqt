@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 from ui.register_window import RegisterWindow  # Kayıt ekranını içe aktarıyoruz
 from ui.login_window import LoginWindow  # Giriş ekranını içe aktarıyoruz
 from ui.main_window import MainWindow  # Ana ekranı içe aktarıyoruz
+from ui.contact_us_window import ContactUsWindow  # Bize ulaşın ekranını içe aktarıyoruz
 
 class EntryPage(QWidget):
     def __init__(self):
@@ -57,21 +58,44 @@ class EntryPage(QWidget):
         self.register_button.clicked.connect(self.open_register_window)  # Kayıt ol ekranına yönlendirme
         layout.addWidget(self.register_button, alignment=Qt.AlignCenter)
 
+        # Bize Ulaşın Butonu
+        self.contact_button = QPushButton("Bize Ulaşın", self)
+        self.contact_button.setFont(QFont("Arial", 12, QFont.Bold))
+        self.contact_button.setStyleSheet(button_style)
+        self.contact_button.clicked.connect(self.open_contact_us_window)  # Bize ulaşın ekranına yönlendirme
+        layout.addWidget(self.contact_button, alignment=Qt.AlignCenter)
+
+        # Çıkış Butonu
+        self.exit_button = QPushButton("Çıkış", self)
+        self.exit_button.setFont(QFont("Arial", 12, QFont.Bold))
+        self.exit_button.setStyleSheet(button_style)
+        self.exit_button.clicked.connect(self.close_application)  # Uygulamayı kapatma
+        layout.addWidget(self.exit_button, alignment=Qt.AlignCenter)
+
         self.setLayout(layout)
-
-
         self.background_label.lower()
 
     def open_login_window(self):
         """Giriş yap ekranını aç ve giriş başarılıysa MainWindow'a yönlendir"""
-        """TODO"""
         self.login_window = LoginWindow()
         self.login_window.show()
         self.hide()
 
     def open_register_window(self):
         """Üye ol ekranını aç ve üye olunursa MainWindow'a yönlendir"""
-        """TODO"""
         self.register_window = RegisterWindow()
         self.register_window.show()
         self.hide()
+
+    def open_contact_us_window(self):
+        """Bize Ulaşın penceresini aç"""
+        self.contact_window = ContactUsWindow()
+        self.contact_window.show()
+        self.hide()
+
+    def close_application(self):
+        """Uygulamayı kapat"""
+        reply = QMessageBox.question(self, 'Çıkış', 'Uygulamayı kapatmak istediğinizden emin misiniz?',
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.close()  # Uygulamayı kapat
