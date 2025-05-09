@@ -77,3 +77,20 @@ class ReservationService:
         except Exception as e:
             print("Hata alındı: ", e)
             return []
+
+    def cancel_reservation(self, user, reservation_id):
+        # Eğer user tuple geldiyse, gerçek User objesini al
+        if isinstance(user, tuple):
+            user = self.user_repository.get_user_by_id(user[0])
+            if not user:
+                return False
+
+        # Veritabanında durumu güncelle
+        self.reservation_repository.update_reservation_status(reservation_id, status="cancelled")
+
+        # Local listeyi güncelle
+        user.reservations = [
+            r for r in user.reservations
+            if r.reservation_id != reservation_id
+        ]
+        return True
