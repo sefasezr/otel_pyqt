@@ -5,14 +5,22 @@ class ReservationRepository:
         self.db = Database()
 
     def get_available_rooms_by_type_and_date(self, room_type, checkin_date, checkout_date):
-        """Odaların tarih aralıklarına göre müsaitliğini kontrol et"""
+        """
+        Odaların tarih aralıklarına göre müsaitliğini kontrol et.
+        - room_type: Seçilen oda türü
+        - checkin_date, checkout_date: Kullanıcının istediği tarih aralığı
+        """
         query = """
-        SELECT room_id, room_type, status FROM rooms
+        SELECT room_id, room_type, status
+        FROM rooms
         WHERE room_type = %s
-        AND room_id NOT IN (
-            SELECT room_id FROM reservations
-            WHERE (check_in_date <= %s AND check_out_date >= %s)
-        )
+          AND room_id NOT IN (
+              SELECT room_id
+              FROM reservations
+              WHERE status = 'active'
+                AND check_in_date <= %s
+                AND check_out_date >= %s
+          )
         """
         return self.db.fetch_query(query, (room_type, checkout_date, checkin_date))
 
