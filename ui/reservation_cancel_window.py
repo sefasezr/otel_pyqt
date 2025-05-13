@@ -64,7 +64,7 @@ class CancelReservationWindow(QWidget):
 
         if not reservations:
             QMessageBox.information(self, "Rezervasyon Yok",
-                                    "Bugünden sonraki rezervasyonunuz bulunmamaktadır.")
+                                    "Güncel Rezervasonunuz Bulunmamakta.")
             return
 
         self.table.setRowCount(len(reservations))
